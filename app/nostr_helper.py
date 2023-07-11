@@ -5,7 +5,7 @@ from nostr.key import PrivateKey
 from nostr.event import EncryptedDirectMessage,Event
 from nostr.delegation import Delegation
 
-def verify_API(pub_key):
+def verify_API():
     relay_manager = RelayManager()
     relay_manager.add_relay("wss://nos.lol")
     relay_manager.add_relay("wss://nostr.bitcoiner.social")
