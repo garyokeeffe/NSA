@@ -4,7 +4,7 @@ import nostr_helper
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/verify')
 def verify_API():
     nostr_helper.verify_API()
     return jsonify(message="Success")
