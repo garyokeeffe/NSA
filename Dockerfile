@@ -14,7 +14,7 @@ RUN /var/lang/bin/python3.8 -m pip install --upgrade pip
 RUN pip install wheel
 
 # Add the current directory contents into the container at /app
-COPY ./my_flask_lambda/ ${LAMBDA_TASK_ROOT}
+COPY ./app/ ${LAMBDA_TASK_ROOT}
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt --target "${LAMBDA_TASK_ROOT}"

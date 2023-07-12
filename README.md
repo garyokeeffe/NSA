@@ -33,7 +33,7 @@ Your IAM role for the Lambda function is now set up and ready to be used. You ca
 
    Modify line 25 of the `Dockerfile` to include your nostr profile's private key in nsec format. (Note: you want to make sure you do not commit this private key to Github if you end up making changes to a cloned version of this repo.)
    
-   Navigate to the directory containing the Dockerfile and run the following commands, replacing `ACCOUNT_ID` with your AWS account ID and `REGION` with your AWS region:
+   Make sure Docker is running on your machinge. Then, navigate to the directory containing the Dockerfile and run the following commands, replacing `ACCOUNT_ID` with your AWS account ID and `REGION` with your AWS region:
 
    ```bash
    $(aws ecr get-login --no-include-email --region REGION)
