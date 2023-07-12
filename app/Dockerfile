@@ -22,7 +22,7 @@ RUN pip install awslambdaric --target "${LAMBDA_TASK_ROOT}"
 
 
 # Setting environment variables
-ENV NOSTR_PRIVATE_KEY="redacted nsec"
+ENV NOSTR_PRIVATE_KEY="placeholder nsec"
 RUN chmod -R 755 ${LAMBDA_TASK_ROOT}
 
 # Run gunicorn when the container launches
