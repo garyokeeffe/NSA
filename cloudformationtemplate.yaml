@@ -5,8 +5,10 @@ Parameters:
   LambdaExecutionRole:
     Type: String
     Description: The ARN of the IAM role that the Lambda function assumes when it's invoked.
+
 AWSTemplateFormatVersion: '2010-09-09'
 Description: AWS CloudFormation template to create a Lambda function from a Docker image and an API Gateway to trigger the Lambda function
+
 Resources:
   MyLambdaFunction:
     Type: 'AWS::Lambda::Function'
@@ -59,3 +61,8 @@ Resources:
       FunctionName: !Ref MyLambdaFunction
       Principal: 'apigateway.amazonaws.com'
       SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${MyApi}/*/*'
+
+Outputs:
+  ApiUrl:
+    Description: The URL of the API Gateway
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/"
