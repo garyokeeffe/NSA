@@ -29,20 +29,28 @@ Your IAM role for the Lambda function is now set up and ready to be used. You ca
 
 ## Deployment
 
-1. **Build and push the Docker image**:
+1. **Update the Dockerfile**:
 
-   Modify line 25 of the `Dockerfile` to include your nostr profile's private key in nsec format. (Note: you want to make sure you do not commit this private key to Github if you end up making changes to a cloned version of this repo.)
+   Modify line 20 of the Dockerfile to include your nostr profile's private key in nsec format. (Note: you want to make sure you do not commit this private key to Github if you end up making changes to a cloned version of this repo.)
    
    Make sure Docker is running on your machinge. Then, navigate to the directory containing the Dockerfile and run the following commands, replacing `ACCOUNT_ID` with your AWS account ID and `REGION` with your AWS region:
 
+
+
+2. **Build and push the Docker image**:
+
+    Make sure Docker is running on your machine. Then, navigate to the directory containing the Dockerfile and run the following commands, replacing ACCOUNT_ID with your AWS account ID and REGION with your AWS region:
+
    ```bash
-   $(aws ecr get-login --no-include-email --region REGION)
-   docker build -t nostr-app .
-   docker tag nostr-app:latest ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/nostr-app:latest
-   docker push ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/nostr-app:latest
+    aws ecr get-login-password --region REGION | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com
+    docker build -t nostr-app .
+    docker tag nostr-app:latest ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/nostr-app:latest
+    # The following command is only necessary if the ECR repository does not already exist.
+    aws ecr create-repository --repository-name nostr-app --region REGION
+    docker push ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/nostr-app:latest
    ```
 
-2. **Deploy the CloudFormation stack**:
+3. **Deploy the CloudFormation stack**:
 
    Navigate to the directory containing the CloudFormation template (`cloudformationtemplate.yaml`) and run the following command, replacing `STACK_NAME` with your desired CloudFormation stack name, `DOCKER_IMAGE_URI` with the URI of the Docker image you just pushed, and `IAM_ROLE_ARN` with the ARN of the IAM role that you created:
 
@@ -52,8 +60,8 @@ Your IAM role for the Lambda function is now set up and ready to be used. You ca
 
 ## Usage
 
-After successful deployment, you can access the Flask application via the URL of the API Gateway that was created. You can find this URL in the Outputs section of the CloudFormation stack in the AWS Management Console. Hit the `/verify` endpoint to verify that the Nostr Serverless API has been successfully configured. If you need to confirm your API gateway URL, run the following command:
+After successful deployment, you can access the Flask application via the URL of the API Gateway that was created. You can find this URL in the Outputs section of the CloudFormation stack in the AWS Management Console. Hit the `/verify` endpoint to verify that the Nostr Serverless API has been successfully configured (this will post a message from your account to the following relays: "wss://nos.lol", "wss://nostr.bitcoiner.social", "wss://relay.damus.io"). If you need to confirm your API gateway URL, run the following command:
 ```bash
 aws cloudformation describe-stacks --stack-name STACK_NAME --query 'Stacks[].Outputs'
 ```
-(remember to replace `STACK_NAME` with the name of your stack (which is defined in the parameter section of your `cloudformationtemplate.yaml` file).
+(remember to replace `STACK_NAME` with the name of your stack (which is defined when you ran `aws cloudformation deploy` in the last step).
