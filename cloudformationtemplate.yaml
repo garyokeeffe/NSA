@@ -38,7 +38,7 @@ Resources:
     Type: 'AWS::ApiGatewayV2::Route'
     Properties:
       ApiId: !Ref MyApi
-      RouteKey: GET /
+      RouteKey: 'ANY /{proxy+}'
       Target: !Join [ '/', [ 'integrations', !Ref MyApiIntegration ] ]
   MyApiDeployment:
     Type: 'AWS::ApiGatewayV2::Deployment'
