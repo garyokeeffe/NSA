@@ -18,12 +18,12 @@ This IAM role is separate from the CLI IAM user mentioned in the prerequisites. 
    - Select "AWS service" for the type of trusted entity and "Lambda" for the service that will use this role, then click "Next: Permissions".
 3. **Attach the necessary policies**:
    - In the "Attach permissions policies" page, search for and select the `AWSLambdaExecute` policy. This managed policy provides the permissions necessary for a Lambda function to execute (including sending logs to CloudWatch Logs).
-   - If your Lambda function needs to access other AWS resources (like an S3 bucket), you should also attach policies that grant permissions to those resources.
+   - If your Lambda function needs to access other AWS resources (like an S3 bucket), you should also attach policies that grant permissions to those resources (however this is not included in the scope of this repo yet and so should not be necessary).
    - Click "Next: Tags".
 4. **(Optional) Add tags**:
-   - You can add tags to your role (key-value pairs) for easier management, then click "Next: Review".
+   - Best practice recommends you add tags to any AWS resource you have configured. You can add tags to your role (key-value pairs) for easier management, then click "Next: Review".
 5. **Review and create the role**:
-   - Give your role a name and (optional) description, review the permissions and tags, and then click "Create role".
+   - Give your role a name and (optional but recommended) description, review the permissions and tags, and then click "Create role".
 
 Your IAM role for the Lambda function is now set up and ready to be used. You can find the ARN of the role in the role's summary page, and it's what you should use for `IAM_ROLE_ARN` when deploying the CloudFormation stack.
 
@@ -50,4 +50,8 @@ Your IAM role for the Lambda function is now set up and ready to be used. You ca
 
 ## Usage
 
-After successful deployment, you can access the Flask application via the URL of the API Gateway that was created. You can find this URL in the Outputs section of the CloudFormation stack in the AWS Management Console. Hit the `/verify` endpoint to verify that the Nostr Serverless API has been successfully configured. 
+After successful deployment, you can access the Flask application via the URL of the API Gateway that was created. You can find this URL in the Outputs section of the CloudFormation stack in the AWS Management Console. Hit the `/verify` endpoint to verify that the Nostr Serverless API has been successfully configured. If you need to confirm your API gateway URL, run the following command:
+```bash
+aws cloudformation describe-stacks --stack-name STACK_NAME --query 'Stacks[].Outputs'
+```
+(remember to replace `STACK_NAME` with the name of your stack (which is defined in the parameter section of your `cloudformationtemplate.yaml` file).
