@@ -26,8 +26,6 @@ ENV NOSTR_PRIVATE_KEY="redacted nsec"
 RUN chmod -R 755 ${LAMBDA_TASK_ROOT}
 
 # Run gunicorn when the container launches
-#CMD ["gunicorn", "wsgi:app", "-b", "0.0.0.0:80"]
-#ENTRYPOINT [ "/usr/local/bin/python", "-m", "awslambdaric" ]
 CMD [ "app.handler" ]
 
 
