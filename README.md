@@ -6,26 +6,7 @@ This repository contains a Dockerized Flask application and an AWS CloudFormatio
 
 - An AWS account
 - Docker installed
-- AWS CLI installed and configured with your AWS credentials. The IAM user that is used to run the AWS CLI commands (let's call this the "CLI IAM user") needs permissions to create and manage AWS Lambda functions, API Gateway APIs, and IAM roles and policies. These permissions can be granted by attaching the `AdministratorAccess` policy to the user, which provides full access to AWS services and resources. However, for production systems, you should follow the principle of least privilege and only grant the necessary permissions.
-
-## Setting up the IAM Role for the Lambda Function
-
-This IAM role is separate from the CLI IAM user mentioned in the prerequisites. The Lambda function needs to assume this role when it's invoked to have the necessary permissions.
-
-1. **Log in to the AWS Management Console and open the IAM service**.
-2. **Create a new role**:
-   - Click on "Roles" in the left-hand menu and then click on "Create role".
-   - Select "AWS service" for the type of trusted entity and "Lambda" for the service that will use this role, then click "Next: Permissions".
-3. **Attach the necessary policies**:
-   - In the "Attach permissions policies" page, search for and select the `AWSLambdaExecute` policy. This managed policy provides the permissions necessary for a Lambda function to execute (including sending logs to CloudWatch Logs).
-   - If your Lambda function needs to access other AWS resources (like an S3 bucket), you should also attach policies that grant permissions to those resources (however this is not included in the scope of this repo yet and so should not be necessary).
-   - Click "Next: Tags".
-4. **(Optional) Add tags**:
-   - Best practice recommends you add tags to any AWS resource you have configured. You can add tags to your role (key-value pairs) for easier management, then click "Next: Review".
-5. **Review and create the role**:
-   - Give your role a name and (optional but recommended) description, review the permissions and tags, and then click "Create role".
-
-Your IAM role for the Lambda function is now set up and ready to be used. You can find the ARN of the role in the role's summary page, and it's what you should use for `IAM_ROLE_ARN` when deploying the CloudFormation stack.
+- AWS CLI installed and configured with your AWS credentials.
 
 ## Deployment
 
@@ -34,8 +15,6 @@ Your IAM role for the Lambda function is now set up and ready to be used. You ca
    Modify line 20 of the Dockerfile to include your nostr profile's private key in nsec format. (Note: you want to make sure you do not commit this private key to Github if you end up making changes to a cloned version of this repo.)
    
    Make sure Docker is running on your machinge. Then, navigate to the directory containing the Dockerfile and run the following commands, replacing `ACCOUNT_ID` with your AWS account ID and `REGION` with your AWS region:
-
-
 
 2. **Build and push the Docker image**:
 
