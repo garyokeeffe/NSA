@@ -2,14 +2,33 @@ Parameters:
   DockerImageUri:
     Type: String
     Description: The URI of the Docker image for the Lambda function.
-  LambdaExecutionRole:
-    Type: String
-    Description: The ARN of the IAM role that the Lambda function assumes when it's invoked.
 
 AWSTemplateFormatVersion: '2010-09-09'
 Description: AWS CloudFormation template to create a Lambda function from a Docker image and an API Gateway to trigger the Lambda function
 
 Resources:
+  MyLambdaExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: '/'
+      Policies:
+        - PolicyName: 'LambdaExecutionPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'logs:*'
+                Resource: 'arn:aws:logs:*:*:*'
   MyLambdaFunction:
     Type: 'AWS::Lambda::Function'
     Properties:
@@ -19,7 +38,7 @@ Resources:
       PackageType: Image
       MemorySize: 512
       Timeout: 60
-      Role: !Ref LambdaExecutionRole
+      Role: !GetAtt MyLambdaExecutionRole.Arn
       Architectures: 
         - arm64
   MyApi:
