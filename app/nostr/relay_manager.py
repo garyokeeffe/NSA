@@ -96,6 +96,11 @@ class RelayManager:
             for url in self.relays:
                 relay = self.relays[url]
                 relay.close()
+    
+    def publish_message(self, message: str):
+        for relay in self.relays.values():
+            if relay.policy.should_write:
+                relay.publish(message)
 
     def publish_event(self, event: Event):
         """ Verifies that the Event is publishable before submitting it to relays """
