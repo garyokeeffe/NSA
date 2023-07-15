@@ -25,35 +25,24 @@ def verify_API():
     relay_manager.close_all_relay_connections()
 
 
-def fetch_text_notes(authors, relays=["wss://nos.lol", "wss://nostr.bitcoiner.social", "wss://relay.damus.io"], logger=None):
+def fetch_text_notes(authors, relays=["wss://nos.lol", "wss://nostr.bitcoiner.social", "wss://relay.damus.io"]):
     try:
-        if logger is None:
-            import logging
-            logger = logging.getLogger(__name__)     
-        logger.info('Starting fetch_text_notes function')
         filters = Filters([Filter( authors=authors, kinds=[EventKind.TEXT_NOTE])])
         subscription_id = uuid.uuid1().hex
-        logger.info(f'Subscription ID: {subscription_id}')
-
         request = [ClientMessageType.REQUEST, subscription_id]
         request.extend(filters.to_json_array())
         
         relay_manager = RelayManager()
 
         for relay in relays:
-            logger.info(f'Adding relay: {relay}')
             relay_manager.add_relay(relay)
 
         time.sleep(1.25)
         
         relay_manager.add_subscription_on_all_relays(id= subscription_id, filters = filters)
         message = json.dumps(request)
-        logger.info(f'Message Pool before publishing: {relay_manager.message_pool}')
-        logger.info(f'Message being published: {message}')
- 
         relay_manager.publish_message(message)
         time.sleep(2)  # allow the messages to send
-        logger.info(f'Message Pool after publishing: {relay_manager.message_pool}')
         result = {}
         while relay_manager.message_pool.has_events():
             event_msg = relay_manager.message_pool.get_event()
@@ -63,7 +52,6 @@ def fetch_text_notes(authors, relays=["wss://nos.lol", "wss://nostr.bitcoiner.so
             result[event_msg.event.note_id] = message_data
 
         relay_manager.close_all_relay_connections()
-        logger.info('Finished fetch_text_notes function')
 
         return result
     except Exception as e:

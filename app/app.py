@@ -20,7 +20,7 @@ def fetch_text_notes():
             authors = request_data['authors']
         else:
             authors = []
-        return jsonify(nostr_helper.fetch_text_notes(authors, relays, logger=app.logger))
+        return jsonify(nostr_helper.fetch_text_notes(authors, relays))
     except Exception as e:
         return jsonify({'error': 'An unexpected error occurred'}), 500
     
