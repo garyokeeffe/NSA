@@ -1,14 +1,31 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import serverless_wsgi
 import nostr_helper
-
+import traceback
+import logging
 app = Flask(__name__)
+#app.logger.setLevel(logging.INFO)
 
 @app.route('/verify', methods=['GET'])
 def verify_API():
     nostr_helper.verify_API()
     return jsonify(message="Success")
 
+@app.route('/fetch_notes', methods=['POST'])
+def fetch_text_notes():
+    try:
+        request_data = request.get_json()
+        if request_data['relays']:
+            relays = request_data['relays']
+        if request_data['authors']:
+            authors = request_data['authors']
+        else:
+            authors = []
+        return jsonify(nostr_helper.fetch_text_notes(authors, relays, logger=app.logger))
+    except Exception as e:
+        app.logger.error(traceback.format_exc())  # Log the traceback
+        return jsonify({'error': 'An unexpected error occurred'}), 500
+    
 @app.route('/<path:path>', methods=['GET', 'POST'])
 def catch_all(path):
     return jsonify(message=f"You've hit the {path} path")
