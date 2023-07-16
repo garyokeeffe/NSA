@@ -32,7 +32,10 @@ def verify_API():
 
 
 def fetch_text_notes(authors, relays=["wss://nos.lol", "wss://nostr.bitcoiner.social", "wss://relay.damus.io"]):
-
+    if isinstance(authors, str):
+        authors = [authors]
+    if isinstance(relays, str):
+        relays = [relays]
     authors = [convert_to_hex(author) for author in authors]
     try:
         filters = Filters([Filter( authors=authors, kinds=[EventKind.TEXT_NOTE])])
