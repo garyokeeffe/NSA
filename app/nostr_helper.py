@@ -49,6 +49,9 @@ def fetch_text_notes(authors, relays=["wss://nos.lol", "wss://nostr.bitcoiner.so
             message_data = {}
             message_data["time_created"] =  event_msg.event.created_at
             message_data["content"] = event_msg.event.content
+            message_data["author"] = event_msg.event.public_key
+            message_data["tags"] = event_msg.event.tags
+            message_data["signature"] = event_msg.event.signature
             result[event_msg.event.note_id] = message_data
 
         relay_manager.close_all_relay_connections()
