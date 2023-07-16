@@ -7,9 +7,15 @@ from nostr.delegation import Delegation
 import json
 import ssl
 import time
+from nostr.key import PublicKey
 from nostr.filter import Filter, Filters
 from nostr.message_type import ClientMessageType
 import uuid
+
+def convert_to_hex(input_str):
+    if input_str.startswith('npub'):
+        input_str = PublicKey.from_npub(input_str).hex()
+    return input_str
 
 def verify_API():
     relay_manager = RelayManager()
@@ -26,6 +32,8 @@ def verify_API():
 
 
 def fetch_text_notes(authors, relays=["wss://nos.lol", "wss://nostr.bitcoiner.social", "wss://relay.damus.io"]):
+
+    authors = [convert_to_hex(author) for author in authors]
     try:
         filters = Filters([Filter( authors=authors, kinds=[EventKind.TEXT_NOTE])])
         subscription_id = uuid.uuid1().hex
@@ -60,3 +68,5 @@ def fetch_text_notes(authors, relays=["wss://nos.lol", "wss://nostr.bitcoiner.so
     except Exception as e:
         logger.error(f'Error in fetch_text_notes function: {str(e)}')
         raise
+
+
