@@ -10,7 +10,7 @@ def verify_API():
     nostr_helper.verify_API()
     return jsonify(message="Success")
 
-@app.route('/fetch_notes', methods=['POST'])
+@app.route('/v0/fetch/notes', methods=['POST'])
 def fetch_text_notes():
     try:
         request_data = request.get_json()
