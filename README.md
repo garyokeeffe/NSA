@@ -1,17 +1,29 @@
 # Nostr Serverless API
 
-This repository contains a Dockerized Flask application and an AWS CloudFormation template to deploy the application to AWS Lambda and expose it via Amazon API Gateway.
-![Figure 1: System Architecture Diagram](https://github.com/garyokeeffe/NSA/blob/main/resources/NostrServerlessAPI.png?raw=true "Figure 1: System Architecture Diagram")
+The Nostr Serverless API (NSA) project allows anyone with an AWS account to quickly and cheaply deploy and run their own Nostr API. We aim to give data scientists working with Nostr data, a superior user experience than what is enjoyed by data scientists working with social data from platforms such as Reddit, Twitter, Instagram, and Facebook.
 
 
+NSA's system architecture is outlined Figure 1. Specifically, this project consists of an AWS API Gateway to that handles inbound traffic and sends it to an AWS Lambda function which runs a Dockerized Flask application to process the request and send back a response.
+
+<p align="center">
+  <img src="https://github.com/garyokeeffe/NSA/blob/main/resources/NostrServerlessAPI.png?raw=true"><br>
+  Figure 1: Nostr Serverless API System Architecture Diagram
+</p>
 
 ## Prerequisites
+
+<details>
+<summary>Details:</summary>
 
 - An AWS account
 - Docker installed
 - AWS CLI installed and configured with your AWS credentials.
 
+</details>
+
 ## Deployment
+<details>
+<summary>Details:</summary>
 
 1. **Build and push the Docker image**:
 
@@ -34,10 +46,18 @@ This repository contains a Dockerized Flask application and an AWS CloudFormatio
    aws cloudformation deploy --template-file ./cloudformationtemplate.yaml --stack-name STACK_NAME --parameter-overrides DockerImageUri=DOCKER_IMAGE_URI NostrPrivateKey=NSEC_FORMATTED_PRIVATE_KEY --capabilities CAPABILITY_IAM --capabilities CAPABILITY_IAM
    ```
 
-## Usage
-
-After successful deployment, you can access the Flask application via the URL of the API Gateway that was created. You can find this URL in the Outputs section of the CloudFormation stack in the AWS Management Console. Hit the `/verify` endpoint to verify that the Nostr Serverless API has been successfully configured (this will post a message from your account to the following relays: "wss://nos.lol", "wss://nostr.bitcoiner.social", "wss://relay.damus.io"). If you need to confirm your API gateway URL, run the following command:
+   After successful deployment, you can access the Flask application via the URL of the API Gateway that was created. You can find your API's base URL by running the following command after successful deployment:
 ```bash
 aws cloudformation describe-stacks --stack-name STACK_NAME --query 'Stacks[].Outputs'
 ```
 (remember to replace `STACK_NAME` with the name of your stack (which is defined when you ran `aws cloudformation deploy` in the last step).
+</details>
+
+## Usage
+
+<details>
+<summary>Details:</summary>
+
+To do.
+
+</details>
