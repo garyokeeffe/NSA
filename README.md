@@ -3,11 +3,11 @@
 The Nostr Serverless API (NSA) project allows anyone with an AWS account to quickly and cheaply deploy and run their own Nostr API. We aim to give data scientists working with Nostr data, a superior user experience than what is enjoyed by data scientists working with social data from platforms such as Reddit, Twitter, Instagram, and Facebook.
 
 
-NSA's system architecture is outlined Figure 1. Specifically, this project consists of an AWS API Gateway to that handles inbound traffic and sends it to an AWS Lambda function which runs a Dockerized Flask application to process the request and send back a response.
+NSA's system architecture is outlined Figure 1. Specifically, this project consists of an AWS API Gateway that routes inbound API calls into an AWS Lambda function, which, in turn, spins up a Dockerized Flask application to process the API request. This architecture was chosen to optimize for operating costs at low traffic volumes. We use an AWS Cloudformation Template to abstract the cloud service configuration process from the user so that delpoying (and maintaining) the API is trivial.
 
 <p align="center">
   <img src="https://github.com/garyokeeffe/NSA/blob/main/resources/NostrServerlessAPI.png?raw=true"><br>
-  Figure 1: Nostr Serverless API System Architecture Diagram
+  <b>Figure 1</b>: Nostr Serverless API System Architecture Diagram
 </p>
 
 ## Prerequisites
@@ -27,7 +27,7 @@ NSA's system architecture is outlined Figure 1. Specifically, this project consi
 
 1. **Build and push the Docker image**:
 
-    Make sure Docker is running on your machine. Then, navigate to the directory containing the Dockerfile and run the following commands, replacing ACCOUNT_ID with your AWS account ID and REGION with your AWS region:
+    Make sure Docker is running on your machine. Then, navigate to the directory containing the Dockerfile and run the following commands, replacing `ACCOUNT_ID` with your AWS account ID and `REGION` with the AWS region wherein you would like to deploy your API:
 
    ```bash
     aws ecr get-login-password --region REGION | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com
