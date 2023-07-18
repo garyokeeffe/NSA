@@ -17,7 +17,7 @@ NSA's system architecture is outlined in **Figure 1** below. Specifically, this 
 ### Prerequisites
 
 - An AWS account
-- Docker installed
+- Docker installed, running, and configured to build `arm64` images
 - AWS CLI installed and configured with your AWS credentials.
 
 ### Steps:
