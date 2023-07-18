@@ -1,6 +1,6 @@
 # Nostr Serverless API
 
-The Nostr Serverless API (NSA) project allows anyone with an AWS account to quickly and cheaply deploy and run their own Nostr API. We aim to give data scientists working with Nostr data, a superior user experience than what is enjoyed by data scientists working with social data from platforms such as Reddit, Twitter, Instagram, and Facebook.
+The Nostr Serverless API (NSA) project allows anyone with an AWS account to quickly and cheaply deploy and maintain their own Nostr API. Our goal is to make a Data Scientist's user experience working with Nostr data amazing.
 
 
 NSA's system architecture is outlined Figure 1. Specifically, this project consists of an AWS API Gateway that routes inbound API calls into an AWS Lambda function, which, in turn, spins up a Dockerized Flask application to process the API request. This architecture was chosen to optimize for operating costs at low traffic volumes. We use an AWS Cloudformation Template to abstract the cloud service configuration process from the user so that delpoying (and maintaining) the API is trivial.
