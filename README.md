@@ -10,13 +10,7 @@ This repository contains a Dockerized Flask application and an AWS CloudFormatio
 
 ## Deployment
 
-1. **Update the Dockerfile**:
-
-   Modify line 20 of the Dockerfile to include your nostr profile's private key in nsec format. (Note: you want to make sure you do not commit this private key to Github if you end up making changes to a cloned version of this repo.)
-   
-   Make sure Docker is running on your machinge. Then, navigate to the directory containing the Dockerfile and run the following commands, replacing `ACCOUNT_ID` with your AWS account ID and `REGION` with your AWS region:
-
-2. **Build and push the Docker image**:
+1. **Build and push the Docker image**:
 
     Make sure Docker is running on your machine. Then, navigate to the directory containing the Dockerfile and run the following commands, replacing ACCOUNT_ID with your AWS account ID and REGION with your AWS region:
 
@@ -29,12 +23,12 @@ This repository contains a Dockerized Flask application and an AWS CloudFormatio
     docker push ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/nostr-app:latest
    ```
 
-3. **Deploy the CloudFormation stack**:
+2. **Deploy the CloudFormation stack**:
 
-   Navigate to the directory containing the CloudFormation template (`cloudformationtemplate.yaml`) and run the following command, replacing `STACK_NAME` with your desired CloudFormation stack name, `DOCKER_IMAGE_URI` with the URI of the Docker image you just pushed:
+   Navigate to the directory containing the CloudFormation template (`cloudformationtemplate.yaml`) and run the following command, replacing `STACK_NAME` with your desired CloudFormation stack name, `DOCKER_IMAGE_URI` with the URI of the Docker image you just pushed, and `NSEC_FORMATTED_PRIVATE_KEY` with a throwaway nostr account's private key:
 
    ```bash
-   aws cloudformation deploy --template-file ./cloudformationtemplate.yaml --stack-name STACK_NAME --parameter-overrides DockerImageUri=DOCKER_IMAGE_URI --capabilities CAPABILITY_IAM
+   aws cloudformation deploy --template-file ./cloudformationtemplate.yaml --stack-name STACK_NAME --parameter-overrides DockerImageUri=DOCKER_IMAGE_URI NostrPrivateKey=NSEC_FORMATTED_PRIVATE_KEY --capabilities CAPABILITY_IAM --capabilities CAPABILITY_IAM
    ```
 
 ## Usage
