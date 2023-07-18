@@ -1,6 +1,9 @@
 # Nostr Serverless API
 
 This repository contains a Dockerized Flask application and an AWS CloudFormation template to deploy the application to AWS Lambda and expose it via Amazon API Gateway.
+![Figure 1: System Architecture Diagram](https://github.com/garyokeeffe/NSA/blob/main/resources/NostrServerlessAPI.png?raw=true "Figure 1: System Architecture Diagram")
+
+
 
 ## Prerequisites
 
