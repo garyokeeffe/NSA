@@ -10,37 +10,35 @@ NSA's system architecture is outlined in **Figure 1** below. Specifically, this 
   <b>Figure 1</b>: Nostr Serverless API System Architecture Diagram
 </p>
 
-## Prerequisites
-
+## Deploying the API
 <details>
 <summary>Details:</summary>
+
+### Prerequisites
 
 - An AWS account
 - Docker installed
 - AWS CLI installed and configured with your AWS credentials.
 
-</details>
+### Steps:
 
-## Deployment
 <details>
-<summary>Details:</summary>
+<summary><b>Step 1: Build and push the Docker image</b> </summary>
 
-1. **Build and push the Docker image**:
+Navigate to the directory containing the Dockerfile (`Dockerfile`) and run the following commands (replacing `ACCOUNT_ID` with your AWS account ID and `REGION` with your desired AWS region):
 
-    Make sure Docker is running on your machine. Then, navigate to the directory containing the Dockerfile and run the following commands, replacing `ACCOUNT_ID` with your AWS account ID and `REGION` with the AWS region wherein you would like to deploy your API:
+```bash
+aws ecr get-login-password --region REGION | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com # Log into your AWS account (remember to replace REGION and ACCOUNT_ID)
+aws ecr create-repository --repository-name nostr-app --region REGION # Create your ECR (if the ECR doesn't already exist)
+docker build -t nostr-app . # Build the docker image giving it the name "nostr-app" 
+docker tag nostr-app:latest ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/nostr-app:latest # Tag your docker image with the ECR name
+docker push ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/nostr-app:latest # Push your docker image onto the ECR
+```
+</details>
+<details>
+<summary><b>Step 2: Deploy the CloudFormation stack</b></summary>
 
-   ```bash
-    aws ecr get-login-password --region REGION | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com
-    docker build -t nostr-app .
-    docker tag nostr-app:latest ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/nostr-app:latest
-    # The following command is only necessary if the ECR repository does not already exist.
-    aws ecr create-repository --repository-name nostr-app --region REGION
-    docker push ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/nostr-app:latest
-   ```
-
-2. **Deploy the CloudFormation stack**:
-
-   Navigate to the directory containing the CloudFormation template (`cloudformationtemplate.yaml`) and run the following command, replacing `STACK_NAME` with your desired CloudFormation stack name, `DOCKER_IMAGE_URI` with the URI of the Docker image you just pushed, and `NSEC_FORMATTED_PRIVATE_KEY` with a throwaway nostr account's private key:
+Navigate to the directory containing the CloudFormation template (`cloudformationtemplate.yaml`) and run the following command, replacing `STACK_NAME` with your desired CloudFormation stack name, `DOCKER_IMAGE_URI` with the URI of the Docker image you just pushed, and `NSEC_FORMATTED_PRIVATE_KEY` with a throwaway nostr account's private key:
 
    ```bash
    aws cloudformation deploy --template-file ./cloudformationtemplate.yaml --stack-name STACK_NAME --parameter-overrides DockerImageUri=DOCKER_IMAGE_URI NostrPrivateKey=NSEC_FORMATTED_PRIVATE_KEY --capabilities CAPABILITY_IAM --capabilities CAPABILITY_IAM
@@ -52,8 +50,9 @@ aws cloudformation describe-stacks --stack-name STACK_NAME --query 'Stacks[].Out
 ```
 (remember to replace `STACK_NAME` with the name of your stack (which is defined when you ran `aws cloudformation deploy` in the last step).
 </details>
+</details>
 
-## Usage
+## Using the API
 
 <details>
 <summary>Details:</summary>
