@@ -1,0 +1,68 @@
+openapi: "3.1.0"  # OpenAPI version
+info:  # API information
+  version: "0.0.1"  # API version
+  title: "Nostr Serverless API"  # API title
+  description: "This is an API for interacting with relays to send and receive information over the Nostr protocol."  # API description
+paths:  # API paths
+  /v0/fetch/notes:  # path
+    post:  # HTTP method
+      summary: "Fetch all notes that meet the filtered criteria"  # operation summary
+      requestBody:  # request body
+        required: true
+        content: 
+          application/json:  # media type
+            schema:  # schema for the request body
+              $ref: "#/components/schemas/NoteRequest"  # reference to a schema definition
+      responses:  # response descriptions
+        200:  # HTTP status code
+          description: "Successful operation"  # response description
+          content: 
+            application/json:  # media type
+              schema:  # schema for the response
+                type: "array"  # type of items
+                items:  # item schema
+                  $ref: "#/components/schemas/Note"  # reference to a schema definition
+        500:
+          description: "Server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:  # schema definitions
+  schemas:  # schema definitions
+    Note:  # definition name
+      type: "object"  # type
+      properties:  # properties of the model
+        id:
+          type: "integer"  # property type
+        name:
+          type: "string"  # property type
+    NoteResponse:
+      type: "object"
+      properties:
+        time_created:
+          type: "integer"
+        content:
+          type: "string"
+        author:
+          type: "string"
+        tags:
+          oneOf:
+            - type: "array"
+              items:
+                oneOf:
+                  - type: "string"
+                  - type: "object"
+                    additionalProperties:
+                      type: "string"
+            - type: "array"
+              items:
+                type: "object"
+                properties: {}
+        signature:
+          type: "string"
+    Error:
+      type: "object"
+      properties:
+        error:
+          type: "string"
