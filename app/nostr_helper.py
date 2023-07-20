@@ -30,6 +30,19 @@ def verify_API():
     time.sleep(1) # allow the messages to send
     relay_manager.close_all_relay_connections()
 
+def send_text_note(text, private_key, relays=["wss://nos.lol", "wss://nostr.bitcoiner.social", "wss://relay.damus.io"]):
+    if isinstance(relays, str):
+        relays = [relays]
+    relay_manager = RelayManager()
+    for relay in relays:
+        relay_manager.add_relay(relay)
+    time.sleep(1.25) # allow the connections to open
+    identity_pk = PrivateKey.from_nsec(private_key)
+    verification_post = Event(text)
+    identity_pk.sign_event(verification_post)
+    relay_manager.publish_event(verification_post)
+    time.sleep(.25) # allow the messages to send
+    relay_manager.close_all_relay_connections()
 
 def fetch_text_notes(authors, relays=["wss://nos.lol", "wss://nostr.bitcoiner.social", "wss://relay.damus.io"]):
     if isinstance(authors, str):
