@@ -31,6 +31,24 @@ def send_text_note(text, private_key, relays=["wss://nos.lol", "wss://nostr.bitc
     time.sleep(.25) # allow the messages to send
     relay_manager.close_all_relay_connections()
 
+def send_dm(text, private_key, public_key, relays=["wss://nos.lol", "wss://nostr.bitcoiner.social", "wss://relay.damus.io"]):
+    if isinstance(relays, str):
+        relays = [relays]
+    relay_manager = RelayManager()
+    for relay in relays:
+        relay_manager.add_relay(relay)
+    time.sleep(1.25) # allow the connections to open
+    identity_pk = PrivateKey.from_nsec(private_key)
+    public_key = convert_to_hex(public_key)
+    dm = EncryptedDirectMessage(
+        recipient_pubkey=public_key,
+        cleartext_content=text
+        )
+    identity_pk.sign_event(dm)
+    relay_manager.publish_event(dm)
+    time.sleep(.25) # allow the messages to send
+    relay_manager.close_all_relay_connections()
+
 def fetch_text_notes(authors, relays=["wss://nos.lol", "wss://nostr.bitcoiner.social", "wss://relay.damus.io"]):
     if isinstance(authors, str):
         authors = [authors]
