@@ -19,10 +19,6 @@ def verify_API():
     except Exception as e:
         return jsonify({'error': 'An unexpected error occurred'}), 500
 
-@app.route('/<path:path>', methods=['GET', 'POST'])
-def catch_all(path):
-    return jsonify(message=f"You've hit the {path} path")
-
 @app.route('/v0/fetch/notes', methods=['POST'])
 def fetch_text_notes():
     try:
