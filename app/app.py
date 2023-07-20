@@ -5,7 +5,7 @@ import nostr_helper
 app = Flask(__name__)
 
 
-@app.route('/verify', methods=['POST'])
+@app.route('/v0/verify', methods=['POST'])
 def verify_API():
     try:
         request_data = request.get_json()
@@ -54,10 +54,6 @@ def send_text_note():
         return jsonify(nostr_helper.send_text_note(text, private_key, relays))
     except Exception as e:
         return jsonify({'error': 'An unexpected error occurred'}), 500
-
-@app.route('/<path:path>', methods=['GET', 'POST'])
-def catch_all(path):
-    return jsonify(message=f"You've hit the {path} path")
 
 def handler(event, context):
     return serverless_wsgi.handle_request(app, event, context)
