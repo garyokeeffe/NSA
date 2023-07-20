@@ -2,9 +2,6 @@ Parameters:
   DockerImageUri:
     Type: String
     Description: The URI of the Docker image for the Lambda function.
-  NostrPrivateKey:
-    Type: String
-    Description: Nostr private key (in nsec format).
 
 AWSTemplateFormatVersion: '2010-09-09'
 Description: AWS CloudFormation template to create a Lambda function from a Docker image and an API Gateway to trigger the Lambda function

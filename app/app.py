@@ -5,10 +5,23 @@ import nostr_helper
 app = Flask(__name__)
 
 
-@app.route('/verify', methods=['GET'])
+@app.route('/verify', methods=['POST'])
 def verify_API():
-    nostr_helper.verify_API()
-    return jsonify(message="Success")
+    try:
+        request_data = request.get_json()
+        if request_data['relays']:
+            relays = request_data['relays']
+        if request_data['private_key']:
+            private_key = request_data['private_key']
+        else:
+            return jsonify({'error': 'You need to include an nsec private key in your request.'}), 500
+        return jsonify(nostr_helper.send_text_note(text = "Running Nostr Serverless API", private_key = private_key, relays = relays))
+    except Exception as e:
+        return jsonify({'error': 'An unexpected error occurred'}), 500
+
+@app.route('/<path:path>', methods=['GET', 'POST'])
+def catch_all(path):
+    return jsonify(message=f"You've hit the {path} path")
 
 @app.route('/v0/fetch/notes', methods=['POST'])
 def fetch_text_notes():

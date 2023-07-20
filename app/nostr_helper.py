@@ -17,19 +17,6 @@ def convert_to_hex(input_str):
         input_str = PublicKey.from_npub(input_str).hex()
     return input_str
 
-def verify_API():
-    relay_manager = RelayManager()
-    relay_manager.add_relay("wss://nos.lol")
-    relay_manager.add_relay("wss://nostr.bitcoiner.social")
-    relay_manager.add_relay("wss://relay.damus.io")
-    time.sleep(1.25) # allow the connections to open
-    identity_pk = PrivateKey.from_nsec(os.getenv('NOSTR_PRIVATE_KEY'))
-    verification_post = Event("Running Nostr Serverless API")
-    identity_pk.sign_event(verification_post)
-    relay_manager.publish_event(verification_post)
-    time.sleep(1) # allow the messages to send
-    relay_manager.close_all_relay_connections()
-
 def send_text_note(text, private_key, relays=["wss://nos.lol", "wss://nostr.bitcoiner.social", "wss://relay.damus.io"]):
     if isinstance(relays, str):
         relays = [relays]
