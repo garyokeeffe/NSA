@@ -5,7 +5,7 @@ The Nostr Serverless API (NSA) project allows anyone with an AWS account to quic
 ## System Architecture
 <details>
 
-NSA's system architecture is outlined in **Figure 1** below. Specifically, this project consists of an AWS API Gateway that routes inbound API calls into an AWS Lambda function, which, in turn, spins up a Dockerized Flask application to process the API request. This architecture was chosen to optimize for operating costs at low traffic volumes. We use an AWS Cloudformation Template to abstract the cloud service configuration process from the user so that delpoying (and maintaining) the API is trivial.
+NSA's system architecture is outlined in **Figure 1** below. Specifically, this project consists of an AWS API Gateway that routes inbound API calls into an AWS Lambda function, which, in turn, spins up a Dockerized Flask application to process the API request. This architecture was chosen to minimize operating costs at low traffic volumes. We use an AWS Cloudformation Template to automate cloud service orchestration so that delpoying (and maintaining) the API is trivial.
 
 <p align="center">
   <img src="https://github.com/garyokeeffe/NSA/blob/main/resources/NostrServerlessAPI.png?raw=true"><br>
