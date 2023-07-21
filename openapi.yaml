@@ -1,68 +1,287 @@
-openapi: "3.1.0"  # OpenAPI version
-info:  # API information
-  version: "0.0.1"  # API version
-  title: "Nostr Serverless API"  # API title
-  description: "This is an API for interacting with relays to send and receive information over the Nostr protocol."  # API description
-paths:  # API paths
-  /v0/fetch/notes:  # path
-    post:  # HTTP method
-      summary: "Fetch all notes that meet the filtered criteria"  # operation summary
-      requestBody:  # request body
+openapi: 3.1.0
+info:
+  version: 0.0.1
+  title: Nostr Serverless API
+  description: This is an API for interacting with relays to send and receive information over the Nostr protocol.
+paths:
+  /v0/fetch/notes:
+    post:
+      summary: Fetch all notes that meet the filtered criteria
+      requestBody:
         required: true
-        content: 
-          application/json:  # media type
-            schema:  # schema for the request body
-              $ref: "#/components/schemas/NoteRequest"  # reference to a schema definition
-      responses:  # response descriptions
-        200:  # HTTP status code
-          description: "Successful operation"  # response description
-          content: 
-            application/json:  # media type
-              schema:  # schema for the response
-                type: "array"  # type of items
-                items:  # item schema
-                  $ref: "#/components/schemas/Note"  # reference to a schema definition
-        500:
-          description: "Server error"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                authors:
+                  type: array
+                  items:
+                    type: string
+                relays:
+                  type: array
+                  items:
+                    type: string
+                event_refs:
+                  type: array
+                  items:
+                    type: string
+                pubkey_refs:
+                  type: array
+                  items:
+                    type: string
+                since:
+                  type: integer
+                until:
+                  type: integer
+                limit:
+                  type: integer
+      responses:
+        "200":
+          description: Successfully fetched notes that met the criteria
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-components:  # schema definitions
-  schemas:  # schema definitions
-    Note:  # definition name
-      type: "object"  # type
-      properties:  # properties of the model
-        id:
-          type: "integer"  # property type
-        name:
-          type: "string"  # property type
-    NoteResponse:
-      type: "object"
+                type: object
+                properties:
+                  time_created:
+                    type: integer
+                  content:
+                    type: string
+                  author:
+                    type: string
+                  tags:
+                    oneOf:
+                    - type: array
+                      items:
+                        oneOf:
+                        - type: string
+                        - type: object
+                          additionalProperties:
+                            type: string
+                    - type: array
+                      items:
+                        type: object
+                        properties: {}
+                  signature:
+                    type: string
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /v0/send/note:
+    post:
+      summary: Send a public note to a set of given relays
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                private_key:
+                  type: string
+                relays:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: "Successfully published the note to the relay[s]"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /v0/send/dm:
+    post:
+      summary: Broadcast a private note on a set of given relays
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                sender_private_key:
+                  type: string
+                recipient_public_key:
+                  type: string
+                relays:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: "Successfully sent the dm to the relay[s]"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /v0/send/verify:
+    post:
+      summary: Fetch all notes that meet the filtered criteria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                private_key:
+                  type: string
+                relays:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+components:
+  schemas:
+    FetchNotesRequest:
+      type: object
+      properties:
+        authors:
+          type: array
+          items:
+            type: string
+        relays:
+          type: array
+          items:
+            type: string
+        event_refs:
+          type: array
+          items:
+            type: string
+        pubkey_refs:
+          type: array
+          items:
+            type: string
+        since:
+          type: integer
+        until:
+          type: integer
+        limit:
+          type: integer
+    FetchNotesResponse:
+      type: object
       properties:
         time_created:
-          type: "integer"
+          type: integer
         content:
-          type: "string"
+          type: string
         author:
-          type: "string"
+          type: string
         tags:
           oneOf:
-            - type: "array"
-              items:
-                oneOf:
-                  - type: "string"
-                  - type: "object"
-                    additionalProperties:
-                      type: "string"
-            - type: "array"
-              items:
-                type: "object"
-                properties: {}
+          - type: array
+            items:
+              oneOf:
+              - type: string
+              - type: object
+                additionalProperties:
+                  type: string
+          - type: array
+            items:
+              type: object
+              properties: {}
         signature:
-          type: "string"
+          type: string
+    SendNoteRequest:
+      type: object
+      properties:
+        text:
+          type: string
+        private_key:
+          type: string
+        relays:
+          type: array
+          items:
+            type: string
+    VerifyRequest:
+      type: object
+      properties:
+        private_key:
+          type: string
+        relays:
+          type: array
+          items:
+            type: string
+    SendDmRequest:
+      type: object
+      properties:
+        text:
+          type: string
+        sender_private_key:
+          type: string
+        recipient_public_key:
+          type: string
+        relays:
+          type: array
+          items:
+            type: string
     Error:
-      type: "object"
+      type: object
       properties:
         error:
-          type: "string"
+          type: string
+    Success:
+      type: object
+      properties:
+        error:
+          type: string
