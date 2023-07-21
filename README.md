@@ -1,11 +1,11 @@
 # Nostr Serverless API
 
-The Nostr Serverless API (NSA) project allows anyone with an AWS account to quickly and cheaply deploy and maintain their own Nostr API. Our goal is to make a Data Scientist's user experience working with Nostr data amazing. The API is in early alpha stage, so expect changes. If this is a project that interests you then please help!
+The Nostr Serverless API (NSA) project allows anyone with an AWS account to quickly and cheaply deploy and maintain their own Nostr API. Our goal is to make a Data Scientist's user experience working with Nostr data amazing. The API is in the early alpha stage, so expect changes. If this is a project that interests you then please help!
 
 ## System Architecture
 <details>
 
-NSA's system architecture is outlined in **Figure 1** below. Specifically, this project consists of an AWS API Gateway that routes inbound API calls into an AWS Lambda function, which, in turn, spins up a Dockerized Flask application to process the API request. This architecture was chosen to minimize operating costs at low traffic volumes. We use an AWS Cloudformation Template to automate cloud service orchestration so that delpoying (and maintaining) the API is trivial.
+NSA's system architecture is outlined in **Figure 1** below. Specifically, this project consists of an AWS API Gateway that routes inbound API calls into an AWS Lambda function, which, in turn, spins up a Dockerized Flask application to process the API request. This architecture was chosen to minimize operating costs at low traffic volumes. We use an AWS Cloudformation Template to automate cloud service orchestration so that deploying (and maintaining) the API is trivial.
 
 <p align="center">
   <img src="https://github.com/garyokeeffe/NSA/blob/main/resources/NostrServerlessAPI.png?raw=true"><br>
@@ -60,7 +60,8 @@ aws cloudformation describe-stacks --stack-name STACK_NAME --query 'Stacks[].Out
 
 <details>
 <summary>Details:</summary>
-Full API documentation is available to Open API standards in this projects `openapi.yaml` file, and is also hosted on [Swagger Hub here](https://app.swaggerhub.com/apis/GARYJOKEEFFE/nostr-serverless_api/0.0.1). We also describe them here briefly.
+  
+Full API documentation is available to Open API standards in this project's `openapi.yaml` file, and is also hosted on [Swagger Hub here](https://app.swaggerhub.com/apis/GARYJOKEEFFE/nostr-serverless_api/0.0.1). We also briefly describe them in this section.
 
 Recall, you must first get your API's Base URL via the `describe-stacks` command (which can be found in Step 2 of the **Deploying the API** section). Once you have the base URL, you will be able to reach the following endpoints (with more endpoints to follow soon):
 
@@ -98,7 +99,7 @@ Recall, you must first get your API's Base URL via the `describe-stacks` command
 <details>
 <summary>Send a DM</summary>
 
-**Description**: Send a DM from your account to someone elses over a set of relays
+**Description**: Send a DM from your account to someone else's over a set of relays
 
 **Endpoint**: `/v0/send/dm`
 
@@ -132,7 +133,7 @@ Recall, you must first get your API's Base URL via the `describe-stacks` command
 - limit = [INTEGER OF #NOTES TO FETCH PER RELAY (Defaults to 2000)]
 
 **Objects included in response**:
-- Dictionary of noteID's wherein each object has the following properties:
+- Dictionary of noteIDs wherein each object has the following properties:
    - time_created = [INTEGER OF WHEN NOTE WAS CREATED]
    - content = [STRING REPRESENTING NOTE's CONTENT]
    - author = [AUTHORS PUBLIC KEY IN HEX FORMAT]
