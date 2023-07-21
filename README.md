@@ -129,7 +129,7 @@ Recall, you must first get your API's Base URL via the `describe-stacks` command
 - event_refs = [LIST OR STRING OF EVENT REFENENCES]
 - pubkey_refs = [LIST OR STRING OF PUB KEY REFENENCES]
 - since = [INTEGER OF INTERVAL START]
-- from = [INTEGER OF INTERVAL TERMINATION]
+- until = [INTEGER OF INTERVAL TERMINATION]
 - limit = [INTEGER OF #NOTES TO FETCH PER RELAY (Defaults to 2000)]
 
 **Objects included in response**:
