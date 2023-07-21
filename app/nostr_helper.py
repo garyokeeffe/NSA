@@ -17,7 +17,7 @@ def convert_to_hex(input_str):
         input_str = PublicKey.from_npub(input_str).hex()
     return input_str
 
-def send_text_note(text, private_key, relays=["wss://nos.lol", "wss://nostr.bitcoiner.social", "wss://relay.damus.io"]):
+def send_text_note(text, private_key, relays):
     if isinstance(relays, str):
         relays = [relays]
     relay_manager = RelayManager()
@@ -31,7 +31,7 @@ def send_text_note(text, private_key, relays=["wss://nos.lol", "wss://nostr.bitc
     time.sleep(.25) # allow the messages to send
     relay_manager.close_all_relay_connections()
 
-def send_dm(text, private_key, public_key, relays=["wss://nos.lol", "wss://nostr.bitcoiner.social", "wss://relay.damus.io"]):
+def send_dm(text, private_key, public_key, relays):
     if isinstance(relays, str):
         relays = [relays]
     relay_manager = RelayManager()
@@ -49,14 +49,50 @@ def send_dm(text, private_key, public_key, relays=["wss://nos.lol", "wss://nostr
     time.sleep(.25) # allow the messages to send
     relay_manager.close_all_relay_connections()
 
-def fetch_text_notes(authors, relays=["wss://nos.lol", "wss://nostr.bitcoiner.social", "wss://relay.damus.io"]):
-    if isinstance(authors, str):
-        authors = [authors]
-    if isinstance(relays, str):
-        relays = [relays]
-    authors = [convert_to_hex(author) for author in authors]
+def find_request_relay(request_data):
+    relays = request_data.get('relays')
+    if relays:
+        if isinstance(relays, str):
+            relays = [relays]
+    else:
+        relays = ["wss://relay.nostr.band/all"]
+    return relays
+
+
+def find_request_authors(request_data):
+    authors = request_data.get('authors')
+    if authors:
+        if isinstance(authors, str):
+            authors = [authors]
+        authors = [convert_to_hex(author) for author in authors]
+    return authors
+
+def find_request_refs(request_data, name_of_ref):
+    refs = request_data.get(name_of_ref)
+    if refs:
+        if isinstance(refs, str):
+            refs = [refs]
+    return refs
+
+def generate_fetch_note_filter(request_data):
+    event_filter = Filter(kinds=[EventKind.TEXT_NOTE])
+    event_filter.authors = find_request_authors(request_data)
+    event_filter.event_refs = find_request_refs(request_data, "event_refs")
+    event_filter.pubkey_refs = find_request_refs(request_data, "pubkey_refs")
+    event_filter.since = request_data.get('since')
+    event_filter.until = request_data.get('until')
+    limit = request_data.get('limit')
+    if limit:
+        event_filter.limit = limit
+    else:
+        event_filter.limit = 2000
+    return event_filter
+    
+    
+
+def fetch_text_notes(event_filter, relays):
     try:
-        filters = Filters([Filter( authors=authors, kinds=[EventKind.TEXT_NOTE])])
+        filters = Filters([event_filter])
         subscription_id = uuid.uuid1().hex
         request = [ClientMessageType.REQUEST, subscription_id]
         request.extend(filters.to_json_array())
@@ -71,7 +107,7 @@ def fetch_text_notes(authors, relays=["wss://nos.lol", "wss://nostr.bitcoiner.so
         relay_manager.add_subscription_on_all_relays(id= subscription_id, filters = filters)
         message = json.dumps(request)
         relay_manager.publish_message(message)
-        time.sleep(2)  # allow the messages to send
+        time.sleep(1.25)  # allow the messages to send
         result = {}
         while relay_manager.message_pool.has_events():
             event_msg = relay_manager.message_pool.get_event()
