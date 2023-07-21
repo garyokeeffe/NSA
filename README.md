@@ -1,6 +1,6 @@
 # Nostr Serverless API
 
-The Nostr Serverless API (NSA) project allows anyone with an AWS account to quickly and cheaply deploy and maintain their own Nostr API. Our goal is to make a Data Scientist's user experience working with Nostr data amazing.
+The Nostr Serverless API (NSA) project allows anyone with an AWS account to quickly and cheaply deploy and maintain their own Nostr API. Our goal is to make a Data Scientist's user experience working with Nostr data amazing. The API is in early alpha stage, so expect changes. If this is a project that interests you then please help!
 
 ## System Architecture
 <details>
