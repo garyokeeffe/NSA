@@ -10,12 +10,24 @@ import time
 from nostr.key import PublicKey
 from nostr.filter import Filter, Filters
 from nostr.message_type import ClientMessageType
+from nostr.bech32 import convertbits, bech32_encode
 import uuid
 
 def convert_to_hex(input_str):
     if input_str.startswith('npub'):
         input_str = PublicKey.from_npub(input_str).hex()
     return input_str
+
+def hex_to_bech32(key_str: str, prefix='npub'):
+        as_int = [int(key_str[i:i+2], 16) for i in range(0, len(key_str), 2)]
+        data = convertbits(as_int, 8, 5)
+        return bech32_encode(prefix, data, False)
+
+def convert_to_nsec(input_str):
+        if not input_str.startswith('nsec'):
+            input_str = hex_to_bech32(input_str, 'nsec')
+        print(input_str)
+        return input_str
 
 def send_text_note(text, private_key, relays):
     if isinstance(relays, str):
@@ -24,6 +36,7 @@ def send_text_note(text, private_key, relays):
     for relay in relays:
         relay_manager.add_relay(relay)
     time.sleep(1.25) # allow the connections to open
+    private_key = convert_to_nsec(private_key)
     identity_pk = PrivateKey.from_nsec(private_key)
     verification_post = Event(text)
     identity_pk.sign_event(verification_post)
@@ -38,6 +51,7 @@ def send_dm(text, private_key, public_key, relays):
     for relay in relays:
         relay_manager.add_relay(relay)
     time.sleep(1.25) # allow the connections to open
+    private_key = convert_to_nsec(private_key)
     identity_pk = PrivateKey.from_nsec(private_key)
     public_key = convert_to_hex(public_key)
     dm = EncryptedDirectMessage(
