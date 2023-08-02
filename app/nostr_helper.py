@@ -26,7 +26,6 @@ def hex_to_bech32(key_str: str, prefix='npub'):
 def convert_to_nsec(input_str):
         if not input_str.startswith('nsec'):
             input_str = hex_to_bech32(input_str, 'nsec')
-        print(input_str)
         return input_str
 
 def send_text_note(text, private_key, relays):
