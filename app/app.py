@@ -23,17 +23,17 @@ def fetch_text_notes():
         request_data = request.get_json()
         event_filter = nostr_helper.generate_fetch_note_filter(request_data)
         relays = nostr_helper.find_request_relay(request_data)
-        return jsonify(nostr_helper.fetch_text_notes(event_filter, relays))
+        return jsonify(nostr_helper.fetch_notes(event_filter, relays))
     except Exception as e:
         return jsonify({'error': 'An unexpected error occurred'}), 500
 
 @app.route('/v0/fetch/likes', methods=['POST'])
-def fetch_text_notes():
+def fetch_like_notes():
     try:
         request_data = request.get_json()
         event_filter = nostr_helper.generate_fetch_like_filter(request_data)
         relays = nostr_helper.find_request_relay(request_data)
-        return jsonify(nostr_helper.fetch_likes(event_filter, relays))
+        return jsonify(nostr_helper.fetch_notes(event_filter, relays))
     except Exception as e:
         return jsonify({'error': 'An unexpected error occurred'}), 500
 

@@ -101,9 +101,21 @@ def generate_fetch_note_filter(request_data):
         event_filter.limit = 2000
     return event_filter
     
-    
+def generate_fetch_like_filter(request_data):
+    event_filter = Filter(kinds=[EventKind.REACTION])
+    event_filter.authors = find_request_authors(request_data)
+    event_filter.event_refs = find_request_refs(request_data, "event_refs")
+    event_filter.pubkey_refs = find_request_refs(request_data, "pubkey_refs")
+    event_filter.since = request_data.get('since')
+    event_filter.until = request_data.get('until')
+    limit = request_data.get('limit')
+    if limit:
+        event_filter.limit = limit
+    else:
+        event_filter.limit = 2000
+    return event_filter    
 
-def fetch_text_notes(event_filter, relays):
+def fetch_notes(event_filter, relays):
     try:
         filters = Filters([event_filter])
         subscription_id = uuid.uuid1().hex
@@ -138,5 +150,3 @@ def fetch_text_notes(event_filter, relays):
     except Exception as e:
         logger.error(f'Error in fetch_text_notes function: {str(e)}')
         raise
-
-
