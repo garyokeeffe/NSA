@@ -41,9 +41,6 @@ Resources:
       Role: !GetAtt MyLambdaExecutionRole.Arn
       Architectures: 
         - arm64
-      Environment:
-        Variables:
-          NOSTR_PRIVATE_KEY: !Ref NostrPrivateKey
   MyApi:
     Type: 'AWS::ApiGatewayV2::Api'
     Properties:
